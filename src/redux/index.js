@@ -1,8 +1,42 @@
-import redux, {createStore} from "redux"
+import redux, {createStore, applyMiddleware} from "redux"
+import thunk from "redux-thunk"
+
+/*
+export function increment() {
+    // API call to get the current count
+    return (dispatch) => {
+        // Do all sorts of async stuff first,
+        // THEN use dispatch({type: "INCREMENT"})
+    }
+}
 
 export function increment() {
     return {
         type: "INCREMENT"
+    }
+}
+*/
+
+/*
+export function increment() {
+    return (dispatch) => {
+        setTimeout(() => {
+            dispatch({type: "INCREMENT"})
+        }, 1500)
+    }
+}
+*/
+
+export function increment() {
+    return (dispatch, getState) => {
+        const currentCount = getState()
+        if(currentCount % 2 === 0) {
+            dispatch({type: "INCREMENT"})
+        } else {
+            setTimeout(() => {
+                dispatch({type: "INCREMENT"})
+            }, 1500)
+        }
     }
 }
 
@@ -23,6 +57,6 @@ function reducer(count = 0, action) {
     }
 }
 
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(thunk))
 store.subscribe(() => console.log(store.getState()))
 export default store
